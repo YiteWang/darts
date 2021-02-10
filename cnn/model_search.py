@@ -69,18 +69,18 @@ class Network(nn.Module):
     self._steps = steps
     self._multiplier = multiplier
 
-    C_curr = stem_multiplier*C
+    C_curr = stem_multiplier*C # 16 * 3
     self.stem = nn.Sequential(
       nn.Conv2d(3, C_curr, 3, padding=1, bias=False),
       nn.BatchNorm2d(C_curr)
     )
  
-    C_prev_prev, C_prev, C_curr = C_curr, C_curr, C
+    C_prev_prev, C_prev, C_curr = C_curr, C_curr, C  # 48, 48 ,16
     self.cells = nn.ModuleList()
     reduction_prev = False
     for i in range(layers):
       if i in [layers//3, 2*layers//3]:
-        C_curr *= 2
+        C_curr *= 2   # 48, 48, 32
         reduction = True
       else:
         reduction = False

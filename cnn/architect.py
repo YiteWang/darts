@@ -41,12 +41,12 @@ class Architect(object):
     loss.backward()
 
   def _backward_step_unrolled(self, input_train, target_train, input_valid, target_valid, eta, network_optimizer):
-    unrolled_model = self._compute_unrolled_model(input_train, target_train, eta, network_optimizer)
+    unrolled_model = self._compute_unrolled_model(input_train, target_train, eta, network_optimizer)  # now model with w'
     unrolled_loss = unrolled_model._loss(input_valid, target_valid)
 
     unrolled_loss.backward()
-    dalpha = [v.grad for v in unrolled_model.arch_parameters()]
-    vector = [v.grad.data for v in unrolled_model.parameters()]
+    dalpha = [v.grad for v in unrolled_model.arch_parameters()]   # alpha gradient
+    vector = [v.grad.data for v in unrolled_model.parameters()]   # weight gradient
     implicit_grads = self._hessian_vector_product(vector, input_train, target_train)
 
     for g, ig in zip(dalpha, implicit_grads):
